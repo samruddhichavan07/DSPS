@@ -1,0 +1,104 @@
+#include <iostream>
+#include <algorithm> 
+using namespace std;
+
+class TrainingProgram {
+private:
+    int rollNumbers[100]; 
+    int n;                
+
+public:
+    // Constructor to initialize the number of students
+    TrainingProgram(int numStudents) {
+        n = numStudents;
+    }
+
+    // Function to input roll numbers of students
+    void inputRollNumbers() {
+        cout << "Enter roll numbers of " << n << " students (in random order):\n";
+        for (int i = 0; i < n; ++i) {
+            cin >> rollNumbers[i];
+        }
+    }
+
+    // Function to display the list of roll numbers
+    void displayRollNumbers() {
+        cout << "Roll numbers of students in the training program:\n";
+        for (int i = 0; i < n; ++i) {
+            cout << rollNumbers[i] << " ";
+        }
+        cout << endl;
+    }
+
+    // Linear Search function to find a student
+    bool linearSearch(int rollNo) {
+        for (int i = 0; i < n; ++i) {
+            if (rollNumbers[i] == rollNo) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Binary Search function to find a student (after sorting the array)
+    bool binarySearch(int rollNo) {
+        // First, sort the roll numbers array
+        sort(rollNumbers, rollNumbers + n);
+
+        // Now perform binary search on the sorted array
+        int left = 0, right = n - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            // Check if the roll number is at mid
+            if (rollNumbers[mid] == rollNo) {
+                return true;
+            }
+
+            // If the roll number is smaller, ignore the right half
+            if (rollNumbers[mid] > rollNo) {
+                right = mid - 1;
+            }
+            // If the roll number is larger, ignore the left half
+            else {
+                left = mid + 1;
+            }
+        }
+        return false;
+    }
+};
+
+int main() {
+    int n, rollNo;
+    cout << "Enter the number of students in the training program: ";
+    cin >> n;
+
+    // Create an instance of TrainingProgram
+    TrainingProgram program(n);
+
+    // Input roll numbers of students
+    program.inputRollNumbers();
+
+    // Display the list of roll numbers
+    program.displayRollNumbers();
+
+    // Search for a particular student's attendance using Linear Search
+    cout << "\nEnter a roll number to search for (using Linear Search): ";
+    cin >> rollNo;
+    if (program.linearSearch(rollNo)) {
+        cout << "Student with roll number " << rollNo << " is present.\n";
+    } else {
+        cout << "Student with roll number " << rollNo << " is not found.\n";
+    }
+
+    // Search for a particular student's attendance using Binary Search
+    cout << "\nEnter a roll number to search for (using Binary Search): ";
+    cin >> rollNo;
+    if (program.binarySearch(rollNo)) {
+        cout << "Student with roll number " << rollNo << " is present.\n";
+    } else {
+        cout << "Student with roll number " << rollNo << " is not found.\n";
+    }
+
+    return 0;
+}
