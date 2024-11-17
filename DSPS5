@@ -133,4 +133,3 @@ bool PizzaParlour::addOrder(int id){
 
  }
 
-Pizza parlour 🍕
