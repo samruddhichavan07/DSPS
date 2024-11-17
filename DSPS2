@@ -1,0 +1,211 @@
+#include <iostream>
+#include <algorithm>
+#include <string>
+using namespace std;
+
+// Structure to represent each book
+struct Book {
+    string title;
+    string author;
+    float cost;
+};
+
+// Library class to handle book-related operations
+class Library {
+private:
+    Book books[100];  // Fixed-size array to store books (up to 100 books)
+    int numBooks;     // Number of books in the library
+
+public:
+    // Constructor to initialize numBooks to 0
+    Library() : numBooks(0) {}
+
+    // Function to add books to the library
+    void addBooks(int n) {
+        if (numBooks + n > 100) {
+            cout << "Cannot add more than 100 books.\n";
+            return;
+        }
+
+        for (int i = 0; i < n; ++i) {
+            cout << "Enter title, author, and cost of book " << numBooks + 1 << ": ";
+            cin >> books[numBooks].title >> books[numBooks].author >> books[numBooks].cost;
+            ++numBooks;
+        }
+    }
+
+    // Function to display books in tabular format
+    void displayBooks() {
+        if (numBooks == 0) {
+            cout << "No books available!\n";
+            return;
+        }
+
+        cout << "Title\t\tAuthor\t\tCost\n";
+        cout << "----------------------------------------\n";
+        for (int i = 0; i < numBooks; ++i) {
+            cout << books[i].title << "\t" << books[i].author << "\t" << books[i].cost << endl;
+        }
+        cout << endl;
+    }
+
+    // Function to sort books in ascending order of their cost
+    void sortAscending() {
+        for (int i = 0; i < numBooks - 1; ++i) {
+            for (int j = i + 1; j < numBooks; ++j) {
+                if (books[i].cost > books[j].cost) {
+                    swap(books[i], books[j]);  // Swap the books
+                }
+            }
+        }
+        cout << "\nBooks in ascending order of cost:\n";
+        displayBooks();
+    }
+
+    // Function to sort books in descending order of their cost
+    void sortDescending() {
+        for (int i = 0; i < numBooks - 1; ++i) {
+            for (int j = i + 1; j < numBooks; ++j) {
+                if (books[i].cost < books[j].cost) {
+                    swap(books[i], books[j]);  // Swap the books
+                }
+            }
+        }
+        cout << "\nBooks in descending order of cost:\n";
+        displayBooks();
+    }
+
+    // Function to filter books with cost less than 500 into a new array
+    void filterBooksByCost() {
+        bool found = false;
+        cout << "\nBooks with cost less than 500:\n";
+        for (int i = 0; i < numBooks; ++i) {
+            if (books[i].cost < 500) {
+                cout << books[i].title << "\t" << books[i].author << "\t" << books[i].cost << endl;
+                found = true;
+            }
+        }
+        if (!found) {
+            cout << "No books with cost less than 500.\n";
+        }
+        cout << endl;
+    }
+
+    // Function to remove duplicate books using a temporary array
+    void removeDuplicatesUsingTempArray() {
+        Book uniqueBooks[100];
+        int uniqueCount = 0;
+
+        for (int i = 0; i < numBooks; ++i) {
+            bool duplicate = false;
+            for (int j = 0; j < uniqueCount; ++j) {
+                if (books[i].title == uniqueBooks[j].title &&
+                    books[i].author == uniqueBooks[j].author &&
+                    books[i].cost == uniqueBooks[j].cost) {
+                    duplicate = true;
+                    break;
+                }
+            }
+            if (!duplicate) {
+                uniqueBooks[uniqueCount++] = books[i];
+            }
+        }
+
+        numBooks = uniqueCount;  // Update the original books array
+        cout << "\nBooks without duplicates (using temporary array):\n";
+        for (int i = 0; i < numBooks; ++i) {
+            cout << uniqueBooks[i].title << "\t" << uniqueBooks[i].author << "\t" << uniqueBooks[i].cost << endl;
+        }
+        cout << endl;
+    }
+
+    // Function to remove duplicates without using a temporary array
+    void removeDuplicatesWithoutTempArray() {
+        for (int i = 0; i < numBooks; ++i) {
+            for (int j = i + 1; j < numBooks; ++j) {
+                if (books[i].title == books[j].title &&
+                    books[i].author == books[j].author &&
+                    books[i].cost == books[j].cost) {
+                    for (int k = j; k < numBooks - 1; ++k) {
+                        books[k] = books[k + 1];  // Shift books left to remove the duplicate
+                    }
+                    --numBooks;  // Decrease the book count
+                    --j;  // Recheck the current position
+                }
+            }
+        }
+        cout << "\nBooks without duplicates (without using temporary array):\n";
+        displayBooks();
+    }
+
+    // Function to count the number of books with cost greater than 500
+    void countBooksCostGreaterThan500() {
+        int count = 0;
+        for (int i = 0; i < numBooks; ++i) {
+            if (books[i].cost > 500) {
+                ++count;
+            }
+        }
+        cout << "\nNumber of books with cost greater than 500: " << count << endl;
+    }
+};
+
+// Menu to perform different operations
+void menu(Library& library) {
+    int choice;
+    do {
+        cout << "\nMENU:\n";
+        cout << "1. Display all books\n";
+        cout << "2. Sort books by ascending order of cost\n";
+        cout << "3. Sort books by descending order of cost\n";
+        cout << "4. Filter books with cost less than 500\n";
+        cout << "5. Count books with cost greater than 500\n";
+        cout << "6. Remove duplicate entries (using temporary array)\n";
+        cout << "7. Remove duplicate entries (without using temporary array)\n";
+        cout << "8. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                cout << "\nBooks in tabular format:\n";
+                library.displayBooks();
+                break;
+            case 2:
+                library.sortAscending();
+                break;
+            case 3:
+                library.sortDescending();
+                break;
+            case 4:
+                library.filterBooksByCost();
+                break;
+            case 5:
+                library.countBooksCostGreaterThan500();
+                break;
+            case 6:
+                library.removeDuplicatesUsingTempArray();
+                break;
+            case 7:
+                library.removeDuplicatesWithoutTempArray();
+                break;
+            case 8:
+                cout << "Exiting...\n";
+                break;
+            default:
+                cout << "Invalid choice! Please try again.\n";
+        }
+    } while (choice != 8);
+}
+
+int main() {
+    int n;
+    Library library;
+    cout << "Enter the total number of books: ";
+    cin >> n;
+    
+    library.addBooks(n);  // Add books to the library
+    menu(library);  // Call the menu to start interaction
+
+    return 0;
+}
