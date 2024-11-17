@@ -1,0 +1,100 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct BookNode {
+    string title;
+    string author;
+    string status;
+    BookNode* next;
+
+    BookNode(string t, string a, string s = "Available") : title(t), author(a), status(s), next(nullptr) {}
+};
+
+class LibraryManagementSystem {
+private:
+    BookNode* head;
+
+public:
+    LibraryManagementSystem() : head(nullptr) {}
+
+    void addBook(string title, string author, string status = "Available") {
+        BookNode* newBook = new BookNode(title, author, status);
+        if (!head) {
+            head = newBook;
+        } else {
+            BookNode* current = head;
+            while (current->next) {
+                current = current->next;
+            }
+            current->next = newBook;
+        }
+        cout << "Book \"" << title << "\" by " << author << " added successfully." << endl;
+    }
+
+    void removeBook(string title) {
+        BookNode* current = head;
+        BookNode* previous = nullptr;
+        while (current) {
+            if (current->title == title) {
+                if (previous) {
+                    previous->next = current->next;
+                } else {
+                    head = current->next;
+                }
+                delete current;
+                cout << "Book \"" << title << "\" removed from the collection." << endl;
+                return;
+            }
+            previous = current;
+            current = current->next;
+        }
+        cout << "Book \"" << title << "\" not found in the collection." << endl;
+    }
+
+    void searchBook(string title) {
+        BookNode* current = head;
+        while (current) {
+            if (current->title == title) {
+                cout << "Book Found: Title: " << current->title << ", Author: " << current->author 
+                     << ", Status: " << current->status << endl;
+                return;
+            }
+            current = current->next;
+        }
+        cout << "Book \"" << title << "\" not found in the collection." << endl;
+    }
+
+    void displayBooks() {
+        if (!head) {
+            cout << "No books in the collection." << endl;
+            return;
+        }
+        BookNode* current = head;
+        while (current) {
+            cout << "Title: " << current->title << ", Author: " << current->author 
+                 << ", Status: " << current->status << endl;
+            current = current->next;
+        }
+    }
+
+    ~LibraryManagementSystem() {
+        BookNode* current = head;
+        while (current) {
+            BookNode* temp = current;
+            current = current->next;
+            delete temp;
+        }
+    }
+};
+
+int main() {
+    LibraryManagementSystem library;
+    library.addBook("The Great Gatsby", "F. Scott Fitzgerald");
+    library.addBook("To Kill a Mockingbird", "Harper Lee");
+    library.displayBooks();
+    library.searchBook("The Great Gatsby");
+    library.removeBook("To Kill a Mockingbird");
+    library.displayBooks();
+    return 0;
+}
