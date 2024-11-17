@@ -1,0 +1,124 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct DonorNode {
+    string name;
+    string contactInfo;
+    double donationAmount;
+    DonorNode* next;
+
+    DonorNode(string n, string contact, double donation) 
+        : name(n), contactInfo(contact), donationAmount(donation), next(nullptr) {}
+};
+
+class CharityManagementSystem {
+private:
+    DonorNode* head;
+
+public:
+    CharityManagementSystem() : head(nullptr) {}
+
+    // Add a new donor to the system
+    void addDonor(string name, string contactInfo, double donationAmount) {
+        DonorNode* newDonor = new DonorNode(name, contactInfo, donationAmount);
+        if (!head) {
+            head = newDonor;
+        } else {
+            DonorNode* current = head;
+            while (current->next) {
+                current = current->next;
+            }
+            current->next = newDonor;
+        }
+        cout << "Donor \"" << name << "\" added successfully." << endl;
+    }
+
+    // Remove a donor from the system
+    void removeDonor(string name) {
+        DonorNode* current = head;
+        DonorNode* previous = nullptr;
+        while (current) {
+            if (current->name == name) {
+                if (previous) {
+                    previous->next = current->next;
+                } else {
+                    head = current->next;
+                }
+                delete current;
+                cout << "Donor \"" << name << "\" removed from the system." << endl;
+                return;
+            }
+            previous = current;
+            current = current->next;
+        }
+        cout << "Donor \"" << name << "\" not found in the system." << endl;
+    }
+
+    // Update donor information
+    void updateDonor(string name, string newContactInfo, double newDonationAmount) {
+        DonorNode* current = head;
+        while (current) {
+            if (current->name == name) {
+                current->contactInfo = newContactInfo;
+                current->donationAmount = newDonationAmount;
+                cout << "Donor \"" << name << "\" information updated successfully." << endl;
+                return;
+            }
+            current = current->next;
+        }
+        cout << "Donor \"" << name << "\" not found in the system." << endl;
+    }
+
+    // Search for a specific donor
+    void searchDonor(string name) {
+        DonorNode* current = head;
+        while (current) {
+            if (current->name == name) {
+                cout << "Donor Found: Name: " << current->name 
+                     << ", Contact: " << current->contactInfo 
+                     << ", Donation Amount: $" << current->donationAmount << endl;
+                return;
+            }
+            current = current->next;
+        }
+        cout << "Donor \"" << name << "\" not found in the system." << endl;
+    }
+
+    // Display information of all donors
+    void displayDonors() {
+        if (!head) {
+            cout << "No donors in the system." << endl;
+            return;
+        }
+        DonorNode* current = head;
+        while (current) {
+            cout << "Name: " << current->name 
+                 << ", Contact: " << current->contactInfo 
+                 << ", Donation Amount: $" << current->donationAmount << endl;
+            current = current->next;
+        }
+    }
+
+    ~CharityManagementSystem() {
+        DonorNode* current = head;
+        while (current) {
+            DonorNode* temp = current;
+            current = current->next;
+            delete temp;
+        }
+    }
+};
+
+int main() {
+    CharityManagementSystem charity;
+    charity.addDonor("John Doe", "123-456-7890", 500.0);
+    charity.addDonor("Jane Smith", "987-654-3210", 250.0);
+    charity.displayDonors();
+    charity.searchDonor("John Doe");
+    charity.updateDonor("Jane Smith", "111-222-3333", 300.0);
+    charity.displayDonors();
+    charity.removeDonor("John Doe");
+    charity.displayDonors();
+    return 0;
+}
