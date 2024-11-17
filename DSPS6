@@ -1,0 +1,198 @@
+#include <iostream>
+#include <deque>
+#include <queue> // Standard C++ library for queue
+
+using namespace std;
+
+// Queue class (FIFO)
+class Queue {
+private:
+    int* arr;
+    int front, rear, capacity;
+
+public:
+    // Constructor to initialize the queue with a given size
+    Queue(int size) {
+        capacity = size;
+        arr = new int[capacity];
+        front = 0;
+        rear = -1;
+    }
+
+    // Destructor to clean up dynamically allocated memory
+    ~Queue() {
+        delete[] arr;
+    }
+
+    // Enqueue operation (Insert an element at the rear of the queue)
+    void enqueue(int value) {
+        if (rear == capacity - 1) {
+            cout << "Queue is full. Cannot enqueue " << value << endl;
+        } else {
+            arr[++rear] = value;
+            cout << "Enqueued " << value << endl;
+        }
+    }
+
+    // Dequeue operation (Remove an element from the front of the queue)
+    void dequeue() {
+        if (front > rear) {
+            cout << "Queue is empty. Cannot dequeue." << endl;
+        } else {
+            cout << "Dequeued " << arr[front++] << endl;
+        }
+    }
+
+    // Display front element of the queue
+    void frontElement() {
+        if (front <= rear) {
+            cout << "Front element: " << arr[front] << endl;
+        } else {
+            cout << "Queue is empty." << endl;
+        }
+    }
+
+    // Check if queue is empty
+    bool isEmpty() {
+        return front > rear;
+    }
+
+    // Display all elements of the queue
+    void display() {
+        if (front <= rear) {
+            cout << "Queue: ";
+            for (int i = front; i <= rear; ++i) {
+                cout << arr[i] << " ";
+            }
+            cout << endl;
+        } else {
+            cout << "Queue is empty." << endl;
+        }
+    }
+};
+
+// Deque class (Double-Ended Queue)
+class Deque {
+private:
+    deque<int> dq;
+
+public:
+    // Push element at the front of the deque
+    void pushFront(int value) {
+        dq.push_front(value);
+        cout << "Pushed " << value << " to the front of the deque." << endl;
+    }
+
+    // Push element at the back of the deque
+    void pushBack(int value) {
+        dq.push_back(value);
+        cout << "Pushed " << value << " to the back of the deque." << endl;
+    }
+
+    // Pop element from the front of the deque
+    void popFront() {
+        if (!dq.empty()) {
+            cout << "Popped " << dq.front() << " from the front of the deque." << endl;
+            dq.pop_front();
+        } else {
+            cout << "Deque is empty. Cannot pop from the front." << endl;
+        }
+    }
+
+    // Pop element from the back of the deque
+    void popBack() {
+        if (!dq.empty()) {
+            cout << "Popped " << dq.back() << " from the back of the deque." << endl;
+            dq.pop_back();
+        } else {
+            cout << "Deque is empty. Cannot pop from the back." << endl;
+        }
+    }
+
+    // Display front element of the deque
+    void frontElement() {
+        if (!dq.empty()) {
+            cout << "Front element: " << dq.front() << endl;
+        } else {
+            cout << "Deque is empty." << endl;
+        }
+    }
+
+    // Display back element of the deque
+    void backElement() {
+        if (!dq.empty()) {
+            cout << "Back element: " << dq.back() << endl;
+        } else {
+            cout << "Deque is empty." << endl;
+        }
+    }
+
+    // Check if deque is empty
+    bool isEmpty() {
+        return dq.empty();
+    }
+
+    // Display all elements in the deque
+    void display() {
+        if (!dq.empty()) {
+            cout << "Deque: ";
+            for (int elem : dq) {
+                cout << elem << " ";
+            }
+            cout << endl;
+        } else {
+            cout << "Deque is empty." << endl;
+        }
+    }
+};
+
+int main() {
+    // Creating Queue with capacity of 5
+    Queue q(5);
+    
+    // Enqueue operations
+    q.enqueue(10);
+    q.enqueue(20);
+    q.enqueue(30);
+    q.enqueue(40);
+    q.enqueue(50);
+    
+    // Trying to enqueue into a full queue
+    q.enqueue(60);
+
+    // Display the queue
+    q.display();
+
+    // Dequeue operations
+    q.dequeue();
+    q.dequeue();
+
+    // Display front element and remaining queue
+    q.frontElement();
+    q.display();
+
+    cout << "-------------------------" << endl;
+
+    // Creating Deque
+    Deque dq;
+
+    // Push operations (both front and back)
+    dq.pushFront(100);
+    dq.pushBack(200);
+    dq.pushFront(50);
+    dq.pushBack(300);
+
+    // Display deque
+    dq.display();
+
+    // Pop operations (both front and back)
+    dq.popFront();
+    dq.popBack();
+
+    // Display front and back elements and remaining deque
+    dq.frontElement();
+    dq.backElement();
+    dq.display();
+
+    return 0;
+}
