@@ -1,0 +1,165 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct TrackNode {
+    string title;
+    string artist;
+    string album;
+    string genre;
+    int duration; // in seconds
+    int releaseYear;
+    TrackNode* next;
+
+    TrackNode(string t, string a, string alb, string g, int d, int r) 
+        : title(t), artist(a), album(alb), genre(g), duration(d), releaseYear(r), next(nullptr) {}
+};
+
+class MusicLibrarySystem {
+private:
+    TrackNode* tail;
+
+public:
+    MusicLibrarySystem() : tail(nullptr) {}
+
+    // Add a new music track
+    void addTrack(string title, string artist, string album, string genre, int duration, int releaseYear) {
+        TrackNode* newTrack = new TrackNode(title, artist, album, genre, duration, releaseYear);
+        if (!tail) {
+            tail = newTrack;
+            tail->next = tail; // Circular link
+        } else {
+            newTrack->next = tail->next;
+            tail->next = newTrack;
+            tail = newTrack;
+        }
+        cout << "Track \"" << title << "\" by " << artist << " added successfully." << endl;
+    }
+
+    // Remove a music track
+    void removeTrack(string title) {
+        if (!tail) {
+            cout << "No tracks in the library." << endl;
+            return;
+        }
+
+        TrackNode* current = tail->next;
+        TrackNode* previous = tail;
+        do {
+            if (current->title == title) {
+                if (current == tail) {
+                    if (current == tail->next) {
+                        delete current;
+                        tail = nullptr;
+                    } else {
+                        previous->next = current->next;
+                        tail = previous;
+                        delete current;
+                    }
+                } else {
+                    previous->next = current->next;
+                    delete current;
+                }
+                cout << "Track \"" << title << "\" removed from the library." << endl;
+                return;
+            }
+            previous = current;
+            current = current->next;
+        } while (current != tail->next);
+
+        cout << "Track \"" << title << "\" not found in the library." << endl;
+    }
+
+    // Update track information
+    void updateTrack(string title, string newArtist, string newAlbum, string newGenre, int newDuration, int newReleaseYear) {
+        if (!tail) {
+            cout << "No tracks in the library." << endl;
+            return;
+        }
+
+        TrackNode* current = tail->next;
+        do {
+            if (current->title == title) {
+                current->artist = newArtist;
+                current->album = newAlbum;
+                current->genre = newGenre;
+                current->duration = newDuration;
+                current->releaseYear = newReleaseYear;
+                cout << "Track \"" << title << "\" updated successfully." << endl;
+                return;
+            }
+            current = current->next;
+        } while (current != tail->next);
+
+        cout << "Track \"" << title << "\" not found in the library." << endl;
+    }
+
+    // Search for a specific track
+    void searchTrack(string title) {
+        if (!tail) {
+            cout << "No tracks in the library." << endl;
+            return;
+        }
+
+        TrackNode* current = tail->next;
+        do {
+            if (current->title == title) {
+                cout << "Track Found: Title: " << current->title 
+                     << ", Artist: " << current->artist 
+                     << ", Album: " << current->album 
+                     << ", Genre: " << current->genre 
+                     << ", Duration: " << current->duration << " seconds"
+                     << ", Release Year: " << current->releaseYear << endl;
+                return;
+            }
+            current = current->next;
+        } while (current != tail->next);
+
+        cout << "Track \"" << title << "\" not found in the library." << endl;
+    }
+
+    // Display all tracks
+    void displayTracks() {
+        if (!tail) {
+            cout << "No tracks in the library." << endl;
+            return;
+        }
+
+        TrackNode* current = tail->next;
+        do {
+            cout << "Title: " << current->title 
+                 << ", Artist: " << current->artist 
+                 << ", Album: " << current->album 
+                 << ", Genre: " << current->genre 
+                 << ", Duration: " << current->duration << " seconds"
+                 << ", Release Year: " << current->releaseYear << endl;
+            current = current->next;
+        } while (current != tail->next);
+    }
+
+    ~MusicLibrarySystem() {
+        if (!tail) return;
+
+        TrackNode* current = tail->next;
+        while (current != tail) {
+            TrackNode* temp = current;
+            current = current->next;
+            delete temp;
+        }
+        delete tail;
+        tail = nullptr;
+    }
+};
+
+int main() {
+    MusicLibrarySystem library;
+    library.addTrack("Song 1", "Artist A", "Album X", "Pop", 210, 2020);
+    library.addTrack("Song 2", "Artist B", "Album Y", "Rock", 180, 2019);
+    library.displayTracks();
+    library.searchTrack("Song 1");
+    library.updateTrack("Song 1", "Artist A", "Album Z", "Pop", 215, 2021);
+    library.displayTracks();
+    library.removeTrack("Song 2");
+    library.displayTracks();
+    return 0;
+}
